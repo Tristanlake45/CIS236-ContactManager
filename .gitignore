@@ -1,0 +1,20 @@
+# Visual Studio / .NET
+bin/
+obj/
+*.user
+*.vs/
+.vscode/
+*.db       # optional: remove if committing a shared SQLite DB
+*.sqlite
+appsettings.Development.json
+
+# Rider
+.idea/
+
+# EF migrations (keep folder, but ignore build artifacts)
+**/Migrations/**/bin
+**/Migrations/**/obj
+
+# OS files
+.DS_Store
+Thumbs.db

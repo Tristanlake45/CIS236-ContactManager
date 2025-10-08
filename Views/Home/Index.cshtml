@@ -1,0 +1,38 @@
+﻿@model PriceQuotation.Models.TipModel
+@{
+    ViewData["Title"] = "Tip Calculator";
+    Layout = "_Layout";  // keep using your layout
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Index" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div>
+        <label for="MealCost">Meal Cost:</label>
+        <input asp-for="MealCost" id="MealCost" />
+        <span asp-validation-for="MealCost" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label>10% Tip:</label>
+        <input value="@ViewBag.Tip10.ToString("C2")" readonly />
+    </div>
+
+    <div>
+        <label>15% Tip:</label>
+        <input value="@ViewBag.Tip15.ToString("C2")" readonly />
+    </div>
+
+    <div>
+        <label>20% Tip:</label>
+        <input value="@ViewBag.Tip20.ToString("C2")" readonly />
+    </div>
+
+    <button type="submit">Calculate</button>
+    <a asp-action="Index">Clear</a>
+</form>
+
+
+
