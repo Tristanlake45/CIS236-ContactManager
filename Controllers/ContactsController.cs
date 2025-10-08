@@ -1,39 +1,116 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PriceQuotation.Models;
+﻿using ContactList.Data;
+using ContactList.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
-namespace PriceQuotation.Controllers
+namespace ContactList.Controllers
 {
-    public class HomeController : Controller
+    public class ContactsController : Controller
     {
-        [HttpGet]
-        public IActionResult Index()
+        private readonly ApplicationDbContext _db;
+        public ContactsController(ApplicationDbContext db) => _db = db;
+
+        // GET: /Contacts
+        public async Task<IActionResult> Index()
         {
-            // Start state: empty input, all tips $0.00
-            ViewBag.Tip10 = 0m;
-            ViewBag.Tip15 = 0m;
-            ViewBag.Tip20 = 0m;
-            return View();
+            var contacts = await _db.Contacts.Include(c => c.Category).ToListAsync();
+            return View(contacts);
         }
 
-        [HttpPost]
-        public IActionResult Index(TipModel model)
+        // GET: /Contacts/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
+            if (id == null) return NotFound();
+            var contact = await _db.Contacts.Include(c => c.Category)
+                                .FirstOrDefaultAsync(c => c.ContactId == id);
+            if (contact == null) return NotFound();
+            return View(contact);
+        }
+
+        // GET: /Contacts/Create
+        public IActionResult Create()
+        {
+            ViewBag.Categories = new SelectList(_db.Categories, "CategoryId", "Name");
+            return View("CreateEdit", new Contact());
+        }
+
+        // POST: /Contacts/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Contact contact, string submit)
+        {
+            if (submit == "Cancel") return RedirectToAction(nameof(Index));
+
             if (ModelState.IsValid)
             {
-                ViewBag.Tip10 = model.CalculateTip(10);
-                ViewBag.Tip15 = model.CalculateTip(15);
-                ViewBag.Tip20 = model.CalculateTip(20);
-            }
-            else
-            {
-                ViewBag.Tip10 = 0m;
-                ViewBag.Tip15 = 0m;
-                ViewBag.Tip20 = 0m;
+                contact.DateAdded = System.DateTime.UtcNow;
+                _db.Add(contact);
+                await _db.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
 
-            return View(model);
+            ViewBag.Categories = new SelectList(_db.Categories, "CategoryId", "Name", contact.CategoryId);
+            return View("CreateEdit", contact);
+        }
+
+        // GET: /Contacts/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+            var contact = await _db.Contacts.FindAsync(id);
+            if (contact == null) return NotFound();
+            ViewBag.Categories = new SelectList(_db.Categories, "CategoryId", "Name", contact.CategoryId);
+            return View("CreateEdit", contact);
+        }
+
+        // POST: /Contacts/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Contact contact, string submit)
+        {
+            if (submit == "Cancel") return RedirectToAction(nameof(Details), new { id });
+
+            if (id != contact.ContactId) return BadRequest();
+
+            if (ModelState.IsValid)
+            {
+                // Keep DateAdded as-is (should not be edited via form)
+                var existing = await _db.Contacts.AsNoTracking().FirstOrDefaultAsync(c => c.ContactId == id);
+                if (existing == null) return NotFound();
+
+                contact.DateAdded = existing.DateAdded;
+                _db.Update(contact);
+                await _db.SaveChangesAsync();
+                return RedirectToAction(nameof(Details), new { id = contact.ContactId });
+            }
+
+            ViewBag.Categories = new SelectList(_db.Categories, "CategoryId", "Name", contact.CategoryId);
+            return View("CreateEdit", contact);
+        }
+
+        // GET: /Contacts/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null) return NotFound();
+            var contact = await _db.Contacts.Include(c => c.Category).FirstOrDefaultAsync(c => c.ContactId == id);
+            if (contact == null) return NotFound();
+            return View(contact);
+        }
+
+        // POST: /Contacts/DeleteConfirmed/5
+        [HttpPost, ActionName("DeleteConfirmed")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var contact = await _db.Contacts.FindAsync(id);
+            if (contact != null)
+            {
+                _db.Contacts.Remove(contact);
+                await _db.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }
-
-
