@@ -90,17 +90,18 @@ namespace ContactList.Controllers
             return View("CreateEdit", contact);
         }
 
-        // GET: /Contacts/Delete/5
+      // GET: /Contacts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
-            var contact = await _db.Contacts.Include(c => c.Category).FirstOrDefaultAsync(c => c.ContactId == id);
+            var contact = await _db.Contacts.Include(c => c.Category)
+                                            .FirstOrDefaultAsync(c => c.ContactId == id);
             if (contact == null) return NotFound();
             return View(contact);
         }
 
-        // POST: /Contacts/DeleteConfirmed/5
-        [HttpPost, ActionName("DeleteConfirmed")]
+        // POST: /Contacts/Delete/5
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -112,5 +113,6 @@ namespace ContactList.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
     }
 }

@@ -9,8 +9,11 @@
     <p>Are you sure you want to delete <strong>@Model.FirstName @Model.LastName</strong>?</p>
 </div>
 
-<form asp-action="DeleteConfirmed" method="post">
-    <input type="hidden" asp-for="ContactId" />
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model.ContactId" />
+
     <button type="submit" class="btn btn-danger">Delete</button>
     <a asp-action="Details" asp-route-id="@Model.ContactId" class="btn btn-secondary">Cancel</a>
 </form>
+
