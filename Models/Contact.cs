@@ -45,5 +45,3 @@ namespace ContactList.Models
         }
     }
 }
-
-

@@ -27,6 +27,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.MapControllerRoute(
+    name: "contact-details-slug",
+    pattern: "contacts/{id:int}/{slug?}",
+    defaults: new { controller = "Contacts", action = "Details" });
+
+
 app.UseAuthorization();
 
 // Default route (change controller=Contacts if you prefer)
