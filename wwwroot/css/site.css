@@ -1,68 +1,136 @@
+/* ===== Base Colors (keep teammate's scheme) ===== */
+:root {
+    --bg: #f8f9fa;
+    --accent: #343a40;
+    --accent-dark: #23272b;
+    --text-main: #333;
+    --border: #dee2e6;
+    --highlight: rgba(0,0,0,.03);
+}
+
+/* ===== Body & Typography ===== */
+html, body {
+    margin: 0;
+    padding: 0;
+}
 body {
-    background-color: #f8f9fa;
+    background-color: var(--bg);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-h2 {
+/* ===== Headings ===== */
+h1, h2 {
     margin-bottom: 1rem;
-    color: #333;
+    color: var(--text-main);
+    font-weight: 700;
 }
 
-.card {
-    border: 1px solid #dee2e6;
-    border-radius: .25rem;
-}
-
-.btn,
-.btn-primary,
-.btn-secondary,
-.btn-danger {
-    background-color: #343a40 !important;
-    border-color: #343a40 !important;
-    color: #fff !important;
-}
-.btn:hover {
- background-color: #23272b !important;
- border-color: #23272b !important;
-}
+/* ===== Sticky full-width header ===== */
 .cm-header {
+    position: sticky;
+    top: 0;
+    z-index: 999;
     background: #f3f4f6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-top: 0;
 }
 .cm-bar {
-    background: #343a40; 
-    padding: 18px 24px;
-    border-radius: 4px;
+    background: var(--accent);
+    padding: 22px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .cm-title {
     color: #fff;
     margin: 0;
-    font-weight: 600;
+    font-weight: 800;
+    text-align: center;
+    font-size: clamp(1.6rem, 3.5vw, 2.25rem);
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+.cm-header.shrink .cm-bar { padding: 12px 16px; }
+.cm-header.shrink .cm-title { font-size: clamp(1.2rem, 2.5vw, 1.6rem); }
+
+/* ===== Main container spacing ===== */
+main.container { margin-top: 1.5rem; }
+
+/* ===== Buttons ===== */
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+    background-color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #fff !important;
+    transition: transform .1s ease, box-shadow .2s ease;
+}
+.btn:hover {
+    background-color: var(--accent-dark) !important;
+    border-color: var(--accent-dark) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+.btn:active { transform: scale(.98); }
+
+/* ===== Table Styling ===== */
+.table thead { background: var(--bg); }
+.table tbody tr:hover { background: var(--highlight); transition: 0.2s ease; }
+.table-contacts {
+    border-radius: .5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,.05);
 }
 
+/* Micro-interactions on rows */
+.row-hover { transition: background .2s ease, transform .06s ease; }
+.row-hover:hover { background: var(--highlight); transform: translateY(-1px); }
 
-.table thead {
-    background: #f8f9fa
+/* ===== Category badge ===== */
+.badge-cat {
+  background: rgba(52,58,64,.1);
+  color: #343a40;
+  padding: .25rem .5rem;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 600;
 }
 
-.table tbody tr:hover {
-    background: rgba(0,0,0,.03)
+/* ===== Avatars ===== */
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #e2e8f0;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+}
+.avatar-md {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
 }
 
+/* ===== Cards, Tables, and Detail Layouts ===== */
+.card {
+    border: 1px solid var(--border);
+    border-radius: .5rem;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform .15s ease;
+}
+.card:hover { transform: translateY(-2px); }
 .details-table > tbody > tr > th,
 .details-table > tbody > tr > td {
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid var(--border);
     padding: .9rem .75rem;
 }
+.details-table th { width: 220px; color: var(--accent); }
 
-.details-table > tbody > tr:first-child > th,
-.details-table > tbody > tr:first-child > td {
-    border-top: 0;
-}
-
-.details-table th {
-    width: 220px;
-    color: #343a40;
-}
-
+/* ===== Validation Alerts ===== */
 .validation-summary-errors,
 .alert-validation {
     border: 1px solid #dc3545;
@@ -71,3 +139,42 @@ h2 {
     border-radius: .5rem;
     padding: .75rem 1rem;
 }
+
+/* ===== Focus-visible (a11y) ===== */
+:focus { outline: none; }
+:focus-visible { outline: 3px solid rgba(52,58,64,.5); outline-offset: 2px; }
+
+/* ===== Mobile “stacked table” ===== */
+@media (max-width: 640px) {
+    table.table-contacts thead { display: none; }
+    table.table-contacts tr {
+        display: block;
+        border: 1px solid var(--border);
+        border-radius: .5rem;
+        margin-bottom: .75rem;
+        padding: .5rem .75rem;
+        background: #fff;
+    }
+    table.table-contacts td {
+        display: grid;
+        grid-template-columns: 110px 1fr;
+        padding: .4rem 0 !important;
+        border: none !important;
+    }
+    table.table-contacts td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--accent);
+        padding-right: .75rem;
+    }
+    table.table-contacts td[data-label="Actions"] { grid-template-columns: 1fr; }
+}
+
+/* ===== Responsive tweaks ===== */
+@media (max-width: 768px) {
+    .cm-title { font-size: 1.25rem; }
+    .details-table th { width: 140px; }
+    .avatar-md { width: 72px; height: 72px; }
+}
+
+
